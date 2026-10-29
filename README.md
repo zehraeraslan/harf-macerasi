@@ -1,73 +1,37 @@
-# React + TypeScript + Vite
+# Harf Macerası
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![CI](https://github.com/zehraeraslan/harf-macerasi/actions/workflows/ci.yml/badge.svg)
 
-Currently, two official plugins are available:
+Okumaya yeni başlayan çocuklar için oyunlu ve eğitici harf öğrenme platformu. Harfler Türkiye'deki ilkokuma müfredatının sırasıyla öğretilir; her yeni harfte önceki harflerle heceler ve kelimeler birlikte pratik edilir.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+> Proje geliştirme aşamasında.
 
-## React Compiler
+## Planlanan özellikler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Kesik çizgili harflerin üzerinden geçerek yazma pratiği
+- Heceleme ve kelime oluşturma
+- Sistemin okuduğu ve çocuğun okuduğu bölümler
+- Boyama, bulmaca ve eşleştirme oyunları
+- Animasyonlu karakterler ve kutlama efektleri
+- Ebeveyn paneli (ilerleme cihazda saklanır, hesap gerekmez)
 
-## Expanding the ESLint configuration
+## Teknolojiler
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+React, TypeScript, Vite, ESLint, Prettier, GitHub Actions
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Çalıştırma
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+## Komutlar
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+| Komut                  | Açıklama                        |
+| ---------------------- | ------------------------------- |
+| `npm run dev`          | Geliştirme sunucusunu başlatır  |
+| `npm run build`        | Yayın paketini üretir           |
+| `npm run lint`         | ESLint kontrolü                 |
+| `npm run format`       | Kodu Prettier ile biçimlendirir |
+| `npm run format:check` | Biçim kontrolü                  |
