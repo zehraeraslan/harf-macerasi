@@ -1,4 +1,172 @@
+:root {
+  /* Renk paleti */
+  --sun: #ffc93c;
+  --tangerine: #ff8a3d;
+  --berry: #ff4f81;
+  --berry-dark: #c4325f;
+  --grape: #7b5cfa;
+  --sky: #3ec1f3;
+  --mint: #3ddc97;
+  --cream: #fff8ec;
+  --ink: #3b2e5a;
+
+  --font: 'Fredoka Variable', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
+  min-height: 100vh;
+  font-family: var(--font);
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 12% 18%, rgb(255 201 60 / 45%) 0 120px, transparent 121px),
+    radial-gradient(circle at 88% 12%, rgb(255 79 129 / 30%) 0 90px, transparent 91px),
+    radial-gradient(circle at 80% 85%, rgb(62 193 243 / 35%) 0 140px, transparent 141px),
+    var(--cream);
+  background-attachment: fixed;
+}
+
+.app {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+/* Büyük, basılabilir, 3B hissi veren buton */
+.btn {
+  font: inherit;
+  font-size: 1.4rem;
+  font-weight: 700;
+  padding: 16px 36px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--berry);
+  box-shadow: 0 8px 0 var(--berry-dark);
+  cursor: pointer;
+  transition:
+    transform 0.1s,
+    box-shadow 0.1s;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(6px);
+  box-shadow: 0 2px 0 var(--berry-dark);
+}
+
+.btn:focus-visible {
+  outline: 4px solid var(--ink);
+  outline-offset: 4px;
+}
+
+.btn:disabled {
+  background: #c9c3d6;
+  box-shadow: 0 8px 0 #a9a2bb;
+  cursor: not-allowed;
+}
+
+/* Tanışma ekranı */
+.intro {
+  width: min(100%, 520px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  text-align: center;
+  animation: pop-in 0.5s ease-out;
+}
+
+.intro__badge {
+  margin: 0;
+  padding: 6px 20px;
+  border-radius: 999px;
+  background: var(--grape);
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.letter-card {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 24px;
+  padding: 24px 48px;
+  background: #fff;
+  border: 6px solid var(--sun);
+  border-radius: 40px;
+  box-shadow: 0 10px 0 var(--tangerine);
+}
+
+.letter-card__upper,
+.letter-card__lower {
+  font-size: clamp(6rem, 22vw, 10rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.letter-card__upper {
+  color: var(--berry);
+}
+
+.letter-card__lower {
+  color: var(--sky);
+}
+
+.chips-block h2 {
+  margin: 0 0 12px;
+  font-size: 1.2rem;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  padding: 8px 22px;
+  border-radius: 999px;
+  background: var(--mint);
+  box-shadow: 0 4px 0 rgb(0 0 0 / 15%);
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.chip--word {
+  background: var(--sun);
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Hareketten rahatsız olan kullanıcılar için animasyonları kapat */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }
