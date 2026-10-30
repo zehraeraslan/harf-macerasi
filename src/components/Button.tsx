@@ -1,5 +1,10 @@
 import type { ButtonHTMLAttributes } from 'react'
 
-export function Button(props: ButtonHTMLAttributes<HTMLButtonElement>) {
-  return <button type="button" className="btn" {...props} />
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'ghost'
+}
+
+export function Button({ variant = 'primary', className, ...rest }: ButtonProps) {
+  const classes = ['btn', `btn--${variant}`, className].filter(Boolean).join(' ')
+  return <button type="button" className={classes} {...rest} />
 }

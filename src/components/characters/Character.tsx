@@ -1,12 +1,15 @@
 import './characters.css'
 import { Cat } from './Cat'
+import { Boy } from './Boy'
+import { Bunny } from './Bunny'
 import { Chick } from './Chick'
 import { Flower } from './Flower'
+import { Girl } from './Girl'
 import { Sparkles } from './Parts'
 import { characterNames } from './types'
 import type { CharacterKind, CharacterMood } from './types'
 
-const bodies = { chick: Chick, cat: Cat, flower: Flower }
+const bodies = { chick: Chick, cat: Cat, flower: Flower, bunny: Bunny, girl: Girl, boy: Boy }
 
 interface CharacterProps {
   kind: CharacterKind

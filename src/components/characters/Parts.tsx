@@ -1,3 +1,4 @@
+import type { CharacterMood } from './types'
 interface EyesProps {
   left: number
   right: number
@@ -48,5 +49,40 @@ export function Sparkles() {
         </g>
       ))}
     </g>
+  )
+}
+
+interface MouthProps {
+  cx: number
+  y: number
+  mood: CharacterMood
+  width?: number
+}
+
+/** Ruh haline göre değişen ağız: gülümseme, konuşma, açık kahkaha. */
+export function Mouth({ cx, y, mood, width = 14 }: MouthProps) {
+  if (mood === 'happy') {
+    return (
+      <path
+        d={`M${cx - width} ${y} Q${cx} ${y + width * 1.8} ${cx + width} ${y} Z`}
+        fill="#c4325f"
+      />
+    )
+  }
+  if (mood === 'talking') {
+    return (
+      <g className="mouth">
+        <ellipse cx={cx} cy={y + 4} rx={width * 0.45} ry={width * 0.5} fill="#c4325f" />
+      </g>
+    )
+  }
+  return (
+    <path
+      d={`M${cx - width * 0.7} ${y} Q${cx} ${y + width * 0.8} ${cx + width * 0.7} ${y}`}
+      fill="none"
+      stroke="#3b2e5a"
+      strokeWidth="3"
+      strokeLinecap="round"
+    />
   )
 }
