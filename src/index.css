@@ -341,3 +341,141 @@ body {
     transform: translateX(10px);
   }
 }
+
+/* Dolu bir arka planda içerik okunaklı kalsın diye yumuşak panel */
+.intro {
+  padding: 20px 24px 28px;
+  border-radius: 40px;
+  background: rgb(255 248 236 / 84%);
+  backdrop-filter: blur(6px);
+}
+
+/* Butonlar yan yana kalsın, alt satıra düşmesin */
+.intro {
+  width: min(100%, 640px);
+}
+
+.actions {
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.btn {
+  white-space: nowrap;
+  font-size: clamp(1.05rem, 3.6vw, 1.35rem);
+  padding: 14px clamp(18px, 4vw, 34px);
+}
+
+.btn--icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  font-size: 1.6rem;
+}
+
+/* Yazma tahtası */
+.trace__board {
+  width: min(100%, 380px);
+  aspect-ratio: 100 / 120;
+  background: #fff;
+  border: 6px solid var(--sun);
+  border-radius: 32px;
+  box-shadow: 0 10px 0 var(--tangerine);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: crosshair;
+}
+
+.trace__rule {
+  stroke: #d9d2e8;
+  stroke-width: 0.8;
+  stroke-dasharray: 2 3;
+}
+
+.trace__track {
+  fill: none;
+  stroke: #efe6ff;
+  stroke-width: 14;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trace__dash {
+  fill: none;
+  stroke: var(--ink);
+  stroke-opacity: 0.45;
+  stroke-width: 1.6;
+  stroke-dasharray: 4 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trace__ink {
+  fill: none;
+  stroke: var(--berry);
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.trace--done .trace__ink {
+  stroke: var(--mint);
+}
+
+.trace__tip {
+  fill: #fff;
+  stroke: var(--berry);
+  stroke-width: 2.5;
+}
+
+.trace__start {
+  fill: var(--sun);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: attention 0.9s ease-in-out infinite;
+}
+
+.trace__number {
+  fill: var(--ink);
+  font-family: var(--font);
+  font-size: 9px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+/* Konfeti */
+.confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti__piece {
+  position: absolute;
+  top: -5vh;
+  border-radius: 3px;
+  animation-name: confetti-fall;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+}
+
+@keyframes confetti-fall {
+  to {
+    transform: translateY(110vh) rotate(720deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confetti {
+    display: none;
+  }
+}

@@ -58,7 +58,7 @@ export function IntroScreen({
       const { rate = voice.rate, mood: talkMood = 'talking', spoken = text } = options
       setSaid(text)
       setMood(talkMood)
-      await speak(spoken, { rate, pitch: voice.pitch, signal })
+      await speak(spoken, { rate, pitch: voice.pitch, signal, clip: text })
       if (!signal.aborted) setMood('idle')
     }
 
@@ -130,7 +130,7 @@ export function IntroScreen({
       }
 
       setPhase('done')
-      await talk('Çok güzel! Sıradaki harfe geçelim!', { rate: 0.85, mood: 'happy' })
+      await talk('Çok güzel! Şimdi yazmayı deneyelim!', { rate: 0.85, mood: 'happy' })
     }
 
     void run()
@@ -213,8 +213,14 @@ export function IntroScreen({
             🎤 Söyledim!
           </Button>
         )}
-        <Button variant="ghost" onClick={() => setRunId((id) => id + 1)}>
-          🔁 Tekrar dinle
+        <Button
+          variant="ghost"
+          className="btn--icon"
+          aria-label="Tekrar dinle"
+          title="Tekrar dinle"
+          onClick={() => setRunId((id) => id + 1)}
+        >
+          🔁
         </Button>
         <Button
           className={phase === 'done' && hasNext ? 'btn--go btn--attention' : 'btn--go'}
@@ -223,7 +229,7 @@ export function IntroScreen({
         >
           {hasNext ? (
             <>
-              Sonraki harf
+              Yazalım!
               <span className="btn__arrow" aria-hidden="true">
                 ➜
               </span>

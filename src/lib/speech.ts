@@ -5,6 +5,54 @@ interface SpeakOptions {
   pitch?: number
   /** İptal edilirse konuşma ve bekleme hemen biter. */
   signal?: AbortSignal
+  /** Ses kaydı için metin. public/audio/<anahtar>.mp3 varsa o çalınır, yoksa cihaz sesi kullanılır. */
+  clip?: string
+}
+
+const TURKISH_CHARS: Record<string, string> = {
+  ç: 'c_',
+  ğ: 'g_',
+  ı: 'i_',
+  ö: 'o_',
+  ş: 's_',
+  ü: 'u_',
+}
+
+/** Metinden ses dosyası adını üretir: "Pıtır" -> "pi_ti_r". Farklı harfler asla çakışmaz. */
+export function clipKey(text: string): string {
+  return text
+    .toLocaleLowerCase('tr-TR')
+    .replace(/[çğıöşü]/g, (char) => TURKISH_CHARS[char])
+    .replace(/[^a-z0-9_]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+let manifestPromise: Promise<Set<string>> | undefined
+
+/** public/audio/manifest.json: mevcut ses dosyalarının anahtar listesi. Yoksa boş sayılır. */
+function loadManifest(): Promise<Set<string>> {
+  manifestPromise ??= fetch(`${import.meta.env.BASE_URL}audio/manifest.json`)
+    .then((response) => (response.ok ? (response.json() as Promise<string[]>) : []))
+    .then((list) => new Set(list))
+    .catch(() => new Set<string>())
+  return manifestPromise
+}
+
+function playClip(key: string, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve) => {
+    const audio = new Audio(`${import.meta.env.BASE_URL}audio/${key}.mp3`)
+    audio.onended = () => resolve()
+    audio.onerror = () => resolve()
+    signal?.addEventListener(
+      'abort',
+      () => {
+        audio.pause()
+        resolve()
+      },
+      { once: true },
+    )
+    void audio.play().catch(() => resolve())
+  })
 }
 
 let voicePromise: Promise<SpeechSynthesisVoice | undefined> | undefined
@@ -58,11 +106,20 @@ export function pause(ms: number, signal?: AbortSignal): Promise<void> {
   })
 }
 
-/** Metni seslendirir; konuşma bitince (ya da iptal edilince) çözülür. */
+/** Önce ses kaydını dener, yoksa cihaz sesiyle okur. Bitince (ya da iptal edilince) çözülür. */
 export async function speak(
   text: string,
-  { rate = 0.8, pitch = 1.15, signal }: SpeakOptions = {},
+  { rate = 0.8, pitch = 1.15, signal, clip }: SpeakOptions = {},
 ): Promise<void> {
+  if (clip) {
+    const manifest = await loadManifest()
+    const key = clipKey(clip)
+    if (!signal?.aborted && manifest.has(key)) {
+      await playClip(key, signal)
+      return
+    }
+  }
+
   if (!isSpeechSupported()) {
     await pause(900, signal)
     return
