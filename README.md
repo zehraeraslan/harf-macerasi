@@ -1,159 +1,163 @@
 <div align="center">
 
-# Harf Macerası
+🇬🇧 **English** · 🇹🇷 [Türkçe](README.tr.md)
 
-**Okumaya yeni başlayan çocuklar için oyunlu ve eğitici harf öğrenme platformu.**
+# Harf Macerası (Letter Adventure)
+
+**A gamified, curriculum-ordered letter-learning app for children who are starting to read.**
 
 ![CI](https://github.com/zehraeraslan/harf-macerasi/actions/workflows/ci.yml/badge.svg)
-![Lisans: MIT](https://img.shields.io/badge/lisans-MIT-blue.svg)
+![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 ![React](https://img.shields.io/badge/React-20232a?logo=react&logoColor=61dafb)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178c6?logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-646cff?logo=vite&logoColor=white)
 ![PWA](https://img.shields.io/badge/PWA-5a0fc8?logo=pwa&logoColor=white)
 
-[**Canlı demo**](https://harf-macerasi.vercel.app) · [Özellikler](#özellikler) · [Mimari](#mimari-ve-tasarım-kararları) · [Geliştirme](#geliştirme)
+[**Live demo**](https://harf-macerasi.vercel.app) · [Features](#features) · [Architecture](#architecture-and-design-decisions) · [Development](#development)
 
-<img src="docs/screenshots/01-baslangic.jpg" alt="Harf Macerası başlangıç ekranı" width="720" />
+<img src="docs/screenshots/01-baslangic.jpg" alt="Harf Macerası start screen" width="720" />
 
 </div>
 
-## Neden bu proje?
+## Why this project?
 
-Harf öğrenirken bir çocuğun henüz görmediği harfle karşılaşması kafa karıştırır. Harf Macerası, öğretim sırasına sadık kalır: çocuk hangi harfleri öğrendiyse **yalnızca onlardan oluşan** heceleri ve kelimeleri görür. `a` ve `n` öğrenilince `an` ve `na` gelir, `e` eklenince `en` ve `ne`. Müfredat, kod yerine **veri** olarak tutulur; harf sırası, kelime havuzu ve yazım yolları tek yerden değişir.
+Harf Macerası teaches the **Turkish alphabet** to early readers. The app, its voice and its content are in Turkish by design; this README is in English so that developers can read the code and the decisions behind it.
 
-Harfler, Türkiye'deki ilkokuma programının öğretim sırasındaki beş gruba göre ilerler. Proje resmî bir ürün değildir ve MEB ile bağlantılı değildir.
+When a child is learning letters, meeting a letter they have not learned yet is confusing. This app sticks to the teaching order: a child only sees syllables and words made **exclusively from the letters they have already learned**. After `a` and `n`, the syllables `an` and `na` appear; adding `e` brings `en` and `ne`. The curriculum is kept as **data, not code**: the letter order, the word pool and the stroke paths all live in one place.
 
-## Özellikler
+Letters follow the five groups of the Turkish primary-school literacy programme. This is an independent project and is not affiliated with the Turkish Ministry of National Education.
 
-- **29 harf, 5 grup:** Her harf için aynı döngü: sesli tanışma, hece ve kelime okuma, kesik çizgili yazma, balon bonusu, yıldız ödülü.
-- **Otomatik içerik:** Heceler ve kelimeler, öğrenilen harflerden kendiliğinden üretilir. Çocuk görmediği harfle karşılaşmaz.
-- **Kesik çizgili yazma:** Parmakla ya da fareyle harfin üzerinden geçilir. Doğru sıra ve yön takip edilir, hata cezalandırılmaz.
-- **29 animasyonlu karakter:** Altısı elle çizilmiş, 23'ü bir "karakter fabrikası"yla (renk, kulak biçimi, aksesuar) üretilmiş. Her harfin kendi karakteri var; konuşur, sevinir, göz kırpar.
-- **Oyun Parkı:** Balon Patlat, Yol Yarışı, Boyama Bulmacası (harf, hece ya da kelimeyle eşleştirmeli) ve Hafıza Kartları.
-- **Ödül sistemi:** Yıldızlar, 24 çıkartma ve çıkartma albümü.
-- **Hesapsız ve takipsiz:** İlerleme yalnızca cihazda saklanır. Reklam ve istatistik aracı yok.
-- **PWA:** Ana ekrana eklenir, internetsiz çalışır.
-- **Erişilebilirlik:** Klavyeyle kullanım, ekran okuyucu etiketleri, `prefers-reduced-motion` desteği, büyük dokunma hedefleri.
-- **Mikrofonla okuma (deneysel, varsayılan kapalı):** Çocuğun söylediğini Web Speech API ile kontrol eder; hata durumunda hiçbir zaman "yanlış" demez.
+## Features
 
-## Ekran görüntüleri
+- **29 letters in 5 groups.** One loop for every letter: spoken introduction, syllable and word reading, dotted-line tracing, a balloon bonus game, and a star reward.
+- **Generated content.** Syllables and words are derived automatically from the letters learned so far.
+- **Dotted-line tracing.** Trace the letter with a finger or mouse. The order and direction of strokes are followed, and mistakes are never punished.
+- **29 animated characters.** Six are hand-drawn SVGs and 23 come from a "character factory" (colour, ear shape, accessory). Every letter has its own character that talks, celebrates and blinks.
+- **Game Park.** Balloon Pop, Road Race, a Paint Puzzle (matching letters, syllables or words) and Memory Cards.
+- **Rewards.** Stars, 24 stickers and a sticker album.
+- **No accounts, no tracking.** Progress is stored only on the device. No ads, no analytics.
+- **PWA.** Installable to the home screen, works offline.
+- **Accessibility.** Keyboard support, screen reader labels, `prefers-reduced-motion` support and large touch targets.
+- **Reading with the microphone (experimental, off by default).** Checks what the child says via the Web Speech API and never tells them they are "wrong".
 
-|              Macera haritası              |              Tanışma ve okuma               |           Kesik çizgili yazma           |
-| :---------------------------------------: | :-----------------------------------------: | :-------------------------------------: |
-| ![Harita](docs/screenshots/02-harita.jpg) | ![Tanışma](docs/screenshots/03-tanisma.jpg) | ![Yazma](docs/screenshots/04-yazma.jpg) |
-|              **Oyun Parkı**               |              **Balon Patlat**               |             **Yol Yarışı**              |
-|   ![Park](docs/screenshots/05-park.jpg)   |   ![Balon](docs/screenshots/06-balon.jpg)   | ![Yarış](docs/screenshots/07-yaris.jpg) |
-|           **Boyama Bulmacası**            |             **Hafıza Kartları**             |           **Çıkartma Albümü**           |
-| ![Boyama](docs/screenshots/08-boyama.jpg) |  ![Hafıza](docs/screenshots/09-hafiza.jpg)  | ![Albüm](docs/screenshots/10-album.jpg) |
+## Screenshots
+
+|                Adventure map                |             Introduction and reading             |            Dotted-line tracing            |
+| :-----------------------------------------: | :----------------------------------------------: | :---------------------------------------: |
+|   ![Map](docs/screenshots/02-harita.jpg)    | ![Introduction](docs/screenshots/03-tanisma.jpg) | ![Tracing](docs/screenshots/04-yazma.jpg) |
+|                **Game Park**                |                 **Balloon Pop**                  |               **Road Race**               |
+|    ![Park](docs/screenshots/05-park.jpg)    |    ![Balloons](docs/screenshots/06-balon.jpg)    |  ![Race](docs/screenshots/07-yaris.jpg)   |
+|              **Paint Puzzle**               |                 **Memory Cards**                 |             **Sticker Album**             |
+| ![Painting](docs/screenshots/08-boyama.jpg) |    ![Memory](docs/screenshots/09-hafiza.jpg)     |  ![Album](docs/screenshots/10-album.jpg)  |
 
 <details>
-<summary>Daha fazlası: mobil görünüm, ebeveyn sayfası, karakterler</summary>
+<summary>More: mobile view, parent page, characters</summary>
 
-|                     Mobil: harita                     |                    Mobil: yazma                     |
-| :---------------------------------------------------: | :-------------------------------------------------: |
-| ![Mobil harita](docs/screenshots/13-mobil-harita.jpg) | ![Mobil yazma](docs/screenshots/14-mobil-yazma.jpg) |
+|                     Mobile: map                     |                    Mobile: tracing                     |
+| :-------------------------------------------------: | :----------------------------------------------------: |
+| ![Mobile map](docs/screenshots/13-mobil-harita.jpg) | ![Mobile tracing](docs/screenshots/14-mobil-yazma.jpg) |
 
-![Ebeveynler için sayfası](docs/screenshots/11-ebeveyn.jpg)
+![Parent information page](docs/screenshots/11-ebeveyn.jpg)
 
-![Harf ve karakter galerisi](docs/screenshots/12-karakterler.jpg)
+![Letter and character gallery](docs/screenshots/12-karakterler.jpg)
 
 </details>
 
-## Nasıl çalışır?
+## How it works
 
 ```mermaid
 flowchart LR
-  map["Harita"] --> intro["Tanışma"] --> trace["Yazma"] --> bonus["Balon bonusu"] --> stars["Yıldız"] --> map
-  map --> park["Oyun Parkı"]
-  park --> games["Balon · Yarış · Boyama · Hafıza"]
-  games --> reward["Yıldız + çıkartma"] --> park
+  map["Map"] --> intro["Meet the letter"] --> trace["Trace"] --> bonus["Balloon bonus"] --> stars["Stars"] --> map
+  map --> park["Game Park"]
+  park --> games["Balloons · Race · Painting · Memory"]
+  games --> reward["Stars + sticker"] --> park
 ```
 
-| Grup | Harfler     | Harita bölgesi   |
-| ---- | ----------- | ---------------- |
-| 1    | A N E T İ L | Papatya Bahçesi  |
-| 2    | O K U R I M | Mantar Ormanı    |
-| 3    | Ü S Ö Y D Z | Gökkuşağı Tepesi |
-| 4    | Ç B G C Ş   | Kale Yolu        |
-| 5    | P H V Ğ F J | Bulut Ülkesi     |
+| Group | Letters     | Map region (in the app)         |
+| ----- | ----------- | ------------------------------- |
+| 1     | A N E T İ L | Papatya Bahçesi (Daisy Garden)  |
+| 2     | O K U R I M | Mantar Ormanı (Mushroom Forest) |
+| 3     | Ü S Ö Y D Z | Gökkuşağı Tepesi (Rainbow Hill) |
+| 4     | Ç B G C Ş   | Kale Yolu (Castle Road)         |
+| 5     | P H V Ğ F J | Bulut Ülkesi (Cloud Land)       |
 
-Bir sonraki harf, öncekini tamamlayınca açılır. Üç harf bitince Oyun Parkı açılır ve oyunlar yalnızca öğrenilmiş harflerle kurulur.
+The next letter unlocks when the previous one is completed. After three letters the Game Park opens, and its games are built only from letters the child has learned.
 
-## Mimari ve tasarım kararları
+## Architecture and design decisions
 
 ```text
 src/
-├── components/     Button, Scene, Confetti ve SVG karakterler
-├── data/           alphabet, words, strokes, cast, stickers (müfredat verisi)
+├── components/     Button, Scene, Confetti and SVG characters
+├── data/           alphabet, words, strokes, cast, stickers (curriculum data)
 ├── features/
-│   ├── curriculum/ hece ve kelime üretimi, Türkçe heceleme
-│   ├── trace/      kesik çizgili yazma: algoritma ve ekran
-│   ├── games/      balon, yarış, boyama, hafıza
-│   ├── speech/     konuşma eşleştirme
-│   └── ...         harita, park, albüm, sonuç, ebeveyn sayfası
+│   ├── curriculum/ syllable and word generation, Turkish syllabification
+│   ├── trace/      dotted-line tracing: algorithm and screen
+│   ├── games/      balloons, race, painting, memory
+│   ├── speech/     speech matching
+│   └── ...         map, park, album, results, parent page
 ├── lib/            speech, listen, progress, settings
 └── types/
 ```
 
-- **Veri odaklı müfredat.** Harfler, kelimeler, yazım yolları ve karakter dağılımı TypeScript verisi olarak durur, derleyici denetler. Testler veriyi de denetler: her harfin yazım yolu ve karakteri var mı, her kelimedeki harf alfabede tanımlı mı, her hecede tam bir ünlü var mı.
-- **Saf fonksiyonlar.** Hece üretimi, kelime süzme, oyun soruları, yarış kuralları, hafıza durum makinesi, ilerleme okuma ve yazma tamamen saf; rastgelelik dışarıdan verildiği için testleri deterministik.
-- **Yazma algoritması.** Her harf SVG yollarından oluşur. Yol, düzenli aralıklı noktalara bölünür; parmağın konumu yalnızca bir sonraki birkaç noktaya yakınsa ilerleme sayılır. Böylece yanlış yönde ya da kestirmeden çizim ilerletmez, yavaş giden de takılmaz. Tolerans tek bir sabittir.
-- **Türkçeye özgü ayrıntılar.** `i`/`İ` ve `ı`/`I` büyük-küçük harf eşlemesi elle yazılır (`toUpperCase()` Türkçede yanlış sonuç verir), metin normalleştirme `tr-TR` kuralıyla yapılır, `ğ` hiçbir hecenin başında durmadığı için yalnızca ünlüden sonra çalışılır.
-- **Tek ses noktası.** Tüm konuşmalar `speak()` üzerinden geçer. Önce `public/audio` altındaki ses kaydına bakar, yoksa cihazın Türkçe sesine döner. Gerçek ses kayıtlarına geçiş koda dokunmadan yapılabilir. `AbortSignal` sayesinde ekran değişince konuşma ve bekleme hemen kesilir.
-- **Dayanıklı ilerleme kaydı.** Saklanan veri okunurken doğrulanır: bozuk, eski ya da yabancı veri uygulamayı çökertmez, geçersiz kayıtlar ayıklanır.
-- **Karakter fabrikası.** 23 karakter, renk, kulak biçimi ve aksesuarın birleşimiyle üretilir; bir test hiçbir birleşimin tekrar etmediğini denetler.
+- **Data-driven curriculum.** Letters, words, stroke paths and the character cast are typed TypeScript data checked by the compiler. Tests check the data too: every letter has stroke paths and a character, every character in the word pool exists in the alphabet, and every syllable has exactly one vowel.
+- **Pure functions.** Syllable generation, word filtering, game rounds, race rules, the memory-game state machine and progress parsing are pure. Randomness is injected, so tests are deterministic.
+- **Tracing algorithm.** Each letter is built from SVG paths. A path is sampled into evenly spaced points, and the pointer only advances progress when it is near one of the next few points. Drawing in the wrong direction or cutting corners does not count, while slow drawing is never stuck. Tolerance is a single constant.
+- **Turkish-specific details.** Upper-casing for `i`/`İ` and `ı`/`I` is written by hand (`toUpperCase()` is wrong for Turkish), text normalisation uses `tr-TR` rules, and `ğ`, which never starts a syllable, is only practised after a vowel.
+- **A single speech entry point.** Every utterance goes through `speak()`. It first looks for a recorded clip under `public/audio` and falls back to the device's Turkish voice, so real recordings can be added without touching the code. An `AbortSignal` cancels speech and waits immediately when the screen changes.
+- **Robust progress storage.** Stored data is validated on read: corrupted, old or foreign data cannot crash the app, and invalid entries are dropped.
+- **Character factory.** 23 characters are produced from combinations of colour, ear shape and accessory, and a test makes sure no combination repeats.
 
-**Teknolojiler:** React, TypeScript, Vite, Vitest, ESLint, Prettier, vite-plugin-pwa, Web Speech API, GitHub Actions, Vercel.
+**Tech:** React, TypeScript, Vite, Vitest, ESLint, Prettier, vite-plugin-pwa, Web Speech API, GitHub Actions, Vercel.
 
-## Geliştirme
+## Development
 
 ```bash
 npm install
 npm run dev
 ```
 
-| Komut                 | Açıklama                                               |
-| --------------------- | ------------------------------------------------------ |
-| `npm run dev`         | Geliştirme sunucusu                                    |
-| `npm run build`       | Yayın paketi (PWA dosyalarıyla birlikte)               |
-| `npm run preview`     | Üretim paketini yerelde çalıştırır                     |
-| `npm test`            | Birim testleri (Vitest)                                |
-| `npm run lint`        | ESLint                                                 |
-| `npm run format`      | Prettier ile biçimlendirir                             |
-| `npm run icons`       | Uygulama simgelerini üretir                            |
-| `npm run screenshots` | README görsellerini üretir (`npm run dev` açık olmalı) |
+| Command               | Description                                       |
+| --------------------- | ------------------------------------------------- |
+| `npm run dev`         | Development server                                |
+| `npm run build`       | Production build (including PWA files)            |
+| `npm run preview`     | Serve the production build locally                |
+| `npm test`            | Unit tests (Vitest)                               |
+| `npm run lint`        | ESLint                                            |
+| `npm run format`      | Format with Prettier                              |
+| `npm run icons`       | Generate app icons                                |
+| `npm run screenshots` | Generate README images (`npm run dev` must be on) |
 
-Geliştirme sırasında `/?gallery` adresi, 29 harfin yazım yolunu ve tüm karakterleri tek ekranda gösterir.
+During development, `/?gallery` shows the stroke paths of all 29 letters and every character on one screen.
 
-Her gönderimde GitHub Actions şu kontrolleri çalıştırır: lint, biçim, test, derleme.
+On every push, GitHub Actions runs lint, formatting, tests and the build.
 
-## Gizlilik
+## Privacy
 
-Hesap, ad, e-posta ya da yaş bilgisi istenmez. İlerleme ve ayarlar yalnızca cihazın tarayıcısında saklanır. Reklam, takip ve istatistik aracı yoktur. Mikrofonla okuma varsayılan olarak kapalıdır; açılırsa ses, tarayıcının konuşma tanıma hizmeti tarafından işlenir ve tarayıcıya göre bir sunucuya gönderilebilir. Uygulama sesi kaydetmez.
+No account, name, e-mail address or age is requested. Progress and settings are stored only in the device's browser. There are no ads, trackers or analytics. Reading with the microphone is **off by default**; when enabled, audio is processed by the browser's speech recognition service and, depending on the browser, may be sent to a server. The app itself does not record or store audio.
 
-## Bilinen sınırlar
+## Known limitations
 
-- Okunuşlar cihazın Türkçe sesiyle yapılır, yetişkin sesidir ve kalitesi cihaza göre değişir.
-- Mikrofonla okuma deneyseldir. Tarayıcı konuşma tanıma, çocuk sesinde ve tek harf ya da kısa hecelerde zayıftır.
-- Kelime listesi ve okunuşlar henüz bir öğretmen tarafından gözden geçirilmedi.
-- Yazma toleransı gerçek çocuklarla denenmedi.
+- Pronunciations use the device's Turkish voice. It is an adult voice and its quality varies by device.
+- Microphone reading is experimental. Browser speech recognition is weak with children's voices and with single letters or very short syllables.
+- The word list and pronunciations have not yet been reviewed by a teacher.
+- Tracing tolerance has not been tested with real children.
 
-## Yol haritası
+## Roadmap
 
-- [x] 29 harflik tam müfredat sırası
-- [x] Kesik çizgili yazma, oyunlar, ödül sistemi
-- [x] PWA, çevrimdışı çalışma
-- [ ] Gerçek ses kaydı (çocuk sesi)
-- [ ] Ebeveyn paneli (hangi harfte zorlanıldı)
-- [ ] Zorlanılan harfler için uyarlanabilir tekrar
-- [ ] Büyük harf yazımı
-- [ ] Profesyonel illüstrasyonlu karakterler
-- [ ] Öğretmen incelemesi ve kelime havuzunun genişletilmesi
+- [x] Full 29-letter curriculum order
+- [x] Dotted-line tracing, games and rewards
+- [x] PWA with offline support
+- [ ] Real voice recordings (a child's voice)
+- [ ] Parent dashboard (which letters are difficult)
+- [ ] Adaptive repetition for difficult letters
+- [ ] Upper-case letter tracing
+- [ ] Professionally illustrated characters
+- [ ] Teacher review and a larger word pool
 
-## Kaynaklar
+## Credits
 
-Yazı tipi: [Fredoka](https://fonts.google.com/specimen/Fredoka) (SIL Open Font License), `@fontsource` üzerinden. Karakterler, sahne ve simgeler bu projede kodla çizilmiştir. Çıkartmalar cihazın emoji yazı tipiyle gösterilir.
+Font: [Fredoka](https://fonts.google.com/specimen/Fredoka) (SIL Open Font License) via `@fontsource`. Characters, scenery and icons are drawn in code for this project. Stickers are rendered with the device's emoji font.
 
-## Lisans
+## License
 
 [MIT](LICENSE)
