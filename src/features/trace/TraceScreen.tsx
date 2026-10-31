@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { PointerEvent } from 'react'
 import { Button } from '../../components/Button'
 import { Character } from '../../components/characters/Character'
-import { characterNames, characterVoices } from '../../components/characters/types'
+import { getCharacterName, getCharacterVoice } from '../../components/characters/types'
 import type { CharacterKind } from '../../components/characters/types'
 import { Confetti } from '../../components/Confetti'
 import { strokes } from '../../data/strokes'
@@ -35,8 +35,8 @@ export function TraceScreen({ letter, character, hasNext, onNext }: TraceScreenP
   const activeStroke = completed.findIndex((done) => !done)
   const finished = samples.length > 0 && activeStroke === -1
   const started = indexes.some((index) => index >= 0)
-  const name = characterNames[character]
-  const voice = characterVoices[character]
+  const name = getCharacterName(character)
+  const voice = getCharacterVoice(character)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -208,7 +208,7 @@ export function TraceScreen({ letter, character, hasNext, onNext }: TraceScreenP
         >
           {hasNext ? (
             <>
-              Sonraki harf
+              Devam
               <span className="btn__arrow" aria-hidden="true">
                 ➜
               </span>

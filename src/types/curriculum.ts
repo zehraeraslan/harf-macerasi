@@ -8,4 +8,6 @@ export interface Letter {
   kind: LetterKind
   /** MEB programındaki harf grubu (1-5) */
   group: number
+  /** Hece başında durmayan harfler (ğ): sadece ünlü+harf heceleri üretilir */
+  onlyAfterVowel?: boolean
 }

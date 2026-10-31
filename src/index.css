@@ -479,3 +479,360 @@ body {
     display: none;
   }
 }
+
+/* Mikrofon */
+.mic-live {
+  margin: 0;
+  padding: 8px 20px;
+  border: 3px solid var(--berry);
+  border-radius: 999px;
+  background: #fff;
+  font-weight: 700;
+  animation: attention 1s ease-in-out infinite;
+}
+
+.parent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.mic-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border: 3px solid var(--grape);
+  border-radius: 24px;
+  background: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mic-toggle input {
+  width: 26px;
+  height: 26px;
+  accent-color: var(--grape);
+}
+
+.mic-toggle:has(input:disabled) {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Bitiş ekranı */
+.finish__cast {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Geliştirici galerisi */
+.gallery {
+  padding: 16px;
+  background: #fff;
+  min-height: 100vh;
+}
+
+.gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 14px;
+}
+
+.gallery__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 10px;
+  border: 2px solid #efe6ff;
+  border-radius: 20px;
+}
+
+.gallery__board {
+  width: 120px;
+  aspect-ratio: 100 / 120;
+  border: 2px solid var(--sun);
+  border-radius: 14px;
+  background: #fff;
+}
+
+/* Mikrofon testi ve geliştirici satırı */
+.notice--live {
+  border-style: solid;
+  border-color: var(--berry);
+  font-weight: 700;
+  animation: attention 1s ease-in-out infinite;
+}
+
+.debug {
+  margin: 0;
+  padding: 4px 12px;
+  border-radius: 12px;
+  background: #3b2e5a;
+  color: #fff;
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+
+/* Macera haritası */
+.map {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: min(100%, 680px);
+  padding: 20px 24px 28px;
+  border-radius: 40px;
+  background: rgb(255 248 236 / 88%);
+  backdrop-filter: blur(6px);
+  animation: pop-in 0.5s ease-out;
+}
+
+.map__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.map__title {
+  margin: 0;
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  color: var(--berry);
+}
+
+.map__stars {
+  margin: 0;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: #fff;
+  border: 3px solid var(--sun);
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.map__game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.map__group {
+  width: 100%;
+}
+
+.map__group h2 {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+}
+
+.map__nodes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 80px;
+  padding: 0;
+  border: 4px solid #fff;
+  border-radius: 28px;
+  font: inherit;
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.node:hover:not(:disabled) {
+  transform: translateY(-3px);
+}
+
+.node:focus-visible {
+  outline: 4px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.node__letter {
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.node__stars {
+  margin-top: 2px;
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+.node--done {
+  background: var(--mint);
+  box-shadow: 0 6px 0 #1f9d68;
+}
+
+.node--current {
+  background: var(--sun);
+  box-shadow: 0 6px 0 var(--tangerine);
+  animation: attention 0.9s ease-in-out infinite;
+}
+
+.node--locked {
+  background: #d9d2e8;
+  color: #a79fbd;
+  box-shadow: 0 6px 0 #bdb4d3;
+  cursor: not-allowed;
+}
+
+.btn--small {
+  font-size: 1rem;
+  padding: 8px 18px;
+  box-shadow: 0 4px 0 #d9d2e8;
+}
+
+/* Balon oyunu */
+.game__dots {
+  display: flex;
+  gap: 8px;
+}
+
+.game__dot {
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--grape);
+  border-radius: 50%;
+  background: #fff;
+}
+
+.game__dot--done {
+  background: var(--grape);
+}
+
+.balloons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.balloon {
+  position: relative;
+  width: 132px;
+  height: 172px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  animation: float 3.2s ease-in-out infinite;
+}
+
+.balloon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.balloon__label {
+  position: absolute;
+  inset: 0 0 32% 0;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 2px 0 rgb(0 0 0 / 25%);
+  pointer-events: none;
+}
+
+.balloon:focus-visible {
+  outline: 4px solid var(--ink);
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
+.balloon--pop {
+  animation: balloon-pop 0.5s ease-out forwards;
+}
+
+.balloon--fade {
+  animation: balloon-fade 0.8s ease-in forwards;
+}
+
+.balloon--wrong {
+  animation: shake 0.4s;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(2deg);
+  }
+}
+
+@keyframes balloon-pop {
+  40% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+@keyframes balloon-fade {
+  to {
+    transform: translateY(-80px);
+    opacity: 0;
+  }
+}
+
+@keyframes shake {
+  20%,
+  60% {
+    transform: translateX(-10px);
+  }
+  40%,
+  80% {
+    transform: translateX(10px);
+  }
+}
+
+/* Yıldız ekranı */
+.stars {
+  display: flex;
+  gap: 10px;
+  font-size: 3.4rem;
+}
+
+.star {
+  filter: grayscale(1) opacity(0.3);
+}
+
+.star--on {
+  filter: none;
+  animation: star-pop 0.6s ease-out both;
+}
+
+@keyframes star-pop {
+  0% {
+    transform: scale(0) rotate(-40deg);
+  }
+  70% {
+    transform: scale(1.4) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}

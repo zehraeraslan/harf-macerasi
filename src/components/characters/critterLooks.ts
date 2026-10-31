@@ -1,0 +1,200 @@
+export type EarStyle = 'round' | 'pointy' | 'long' | 'floppy' | 'none'
+export type Accessory = 'bow' | 'hat' | 'glasses' | 'flower' | 'scarf' | 'none'
+
+export interface CritterLook {
+  name: string
+  /** Yükseldikçe ses incelir (1 = normal, en fazla 2) */
+  pitch: number
+  body: string
+  belly: string
+  ears: EarStyle
+  accessory: Accessory
+}
+
+/** 2-5. grup harflerinin karakterleri. Her harf için farklı renk/kulak/aksesuar birleşimi. */
+export const critterLooks = {
+  oli: {
+    name: 'Oli',
+    pitch: 1.6,
+    body: '#ffb86b',
+    belly: '#ffe0b8',
+    ears: 'round',
+    accessory: 'hat',
+  },
+  kuki: {
+    name: 'Kuki',
+    pitch: 1.7,
+    body: '#ff9ecb',
+    belly: '#ffd6e8',
+    ears: 'pointy',
+    accessory: 'bow',
+  },
+  ufi: {
+    name: 'Ufi',
+    pitch: 1.5,
+    body: '#8fdcff',
+    belly: '#d6f2ff',
+    ears: 'long',
+    accessory: 'glasses',
+  },
+  rina: {
+    name: 'Rina',
+    pitch: 1.6,
+    body: '#b9f27c',
+    belly: '#e3fbc0',
+    ears: 'floppy',
+    accessory: 'flower',
+  },
+  isil: {
+    name: 'Işıl',
+    pitch: 1.8,
+    body: '#ffe066',
+    belly: '#fff3b0',
+    ears: 'round',
+    accessory: 'scarf',
+  },
+  mimi: {
+    name: 'Mimi',
+    pitch: 1.7,
+    body: '#c8a2ff',
+    belly: '#ebdcff',
+    ears: 'pointy',
+    accessory: 'none',
+  },
+  uzum: {
+    name: 'Üzüm',
+    pitch: 1.4,
+    body: '#9b7bff',
+    belly: '#d9ccff',
+    ears: 'round',
+    accessory: 'flower',
+  },
+  susam: {
+    name: 'Susam',
+    pitch: 1.3,
+    body: '#e0b48a',
+    belly: '#f5e1cc',
+    ears: 'floppy',
+    accessory: 'hat',
+  },
+  oyku: {
+    name: 'Öykü',
+    pitch: 1.8,
+    body: '#ff8a8a',
+    belly: '#ffd0d0',
+    ears: 'long',
+    accessory: 'bow',
+  },
+  yumak: {
+    name: 'Yumak',
+    pitch: 1.5,
+    body: '#7de3c4',
+    belly: '#c9f6e8',
+    ears: 'none',
+    accessory: 'scarf',
+  },
+  dilek: {
+    name: 'Dilek',
+    pitch: 1.6,
+    body: '#a9b8ff',
+    belly: '#dde3ff',
+    ears: 'round',
+    accessory: 'bow',
+  },
+  zipzip: {
+    name: 'Zıpzıp',
+    pitch: 1.9,
+    body: '#ffe066',
+    belly: '#fff3b0',
+    ears: 'long',
+    accessory: 'glasses',
+  },
+  cilek: {
+    name: 'Çilek',
+    pitch: 1.7,
+    body: '#ff6b7a',
+    belly: '#ffc2c9',
+    ears: 'none',
+    accessory: 'flower',
+  },
+  bulut: {
+    name: 'Bulut',
+    pitch: 1.3,
+    body: '#cfe3ff',
+    belly: '#f1f7ff',
+    ears: 'none',
+    accessory: 'none',
+  },
+  gulucuk: {
+    name: 'Gülücük',
+    pitch: 1.8,
+    body: '#ff9ecb',
+    belly: '#ffd6e8',
+    ears: 'floppy',
+    accessory: 'glasses',
+  },
+  cici: {
+    name: 'Cici',
+    pitch: 1.7,
+    body: '#7de3c4',
+    belly: '#c9f6e8',
+    ears: 'pointy',
+    accessory: 'hat',
+  },
+  seker: {
+    name: 'Şeker',
+    pitch: 1.6,
+    body: '#ffb86b',
+    belly: '#ffe0b8',
+    ears: 'long',
+    accessory: 'scarf',
+  },
+  pamuk: {
+    name: 'Pamuk',
+    pitch: 1.5,
+    body: '#f4f0ff',
+    belly: '#ffffff',
+    ears: 'floppy',
+    accessory: 'bow',
+  },
+  havuc: {
+    name: 'Havuç',
+    pitch: 1.4,
+    body: '#ff9a3c',
+    belly: '#ffd2a1',
+    ears: 'pointy',
+    accessory: 'flower',
+  },
+  visne: {
+    name: 'Vişne',
+    pitch: 1.5,
+    body: '#c2335f',
+    belly: '#f08aa8',
+    ears: 'round',
+    accessory: 'glasses',
+  },
+  yagmur: {
+    name: 'Yağmur',
+    pitch: 1.4,
+    body: '#7fb2ff',
+    belly: '#cfe2ff',
+    ears: 'floppy',
+    accessory: 'scarf',
+  },
+  findik: {
+    name: 'Fındık',
+    pitch: 1.3,
+    body: '#b98a5e',
+    belly: '#e3c9a8',
+    ears: 'round',
+    accessory: 'bow',
+  },
+  jole: {
+    name: 'Jöle',
+    pitch: 1.9,
+    body: '#9be37d',
+    belly: '#d4f5c5',
+    ears: 'none',
+    accessory: 'hat',
+  },
+} satisfies Record<string, CritterLook>

@@ -1,18 +1,23 @@
 import { useEffect, useRef, useState } from 'react'
 import { Button } from '../../components/Button'
 import { Character } from '../../components/characters/Character'
-import { characterNames, characterVoices } from '../../components/characters/types'
+import { getCharacterName, getCharacterVoice } from '../../components/characters/types'
 import type { CharacterKind, CharacterMood } from '../../components/characters/types'
+import { isListeningSupported, listen } from '../../lib/listen'
 import { pause, speak, stopSpeaking } from '../../lib/speech'
 import type { Letter } from '../../types/curriculum'
 import { syllabify } from '../curriculum/syllables'
+import { isMatch } from '../speech/match'
 
 type Phase = 'letter' | 'repeat' | 'syllables' | 'words' | 'done'
 type ItemKind = 'syllable' | 'word'
+/** success: doğru duyuldu, tried: ses algılandı, gaveUp: iki denemede olmadı, timed: mikrofon yok */
+type TurnResult = 'success' | 'tried' | 'gaveUp' | 'timed'
 
-/** Çocuğun tekrar etmesi için tanınan süreler (milisaniye). Gerekirse buradan ayarla. */
-const SYLLABLE_TURN_MS = 2000
-const WORD_TURN_BASE_MS = 1600
+/** Çocuğun söylemesi için tanınan süreler (milisaniye). Gerekirse buradan ayarla. */
+const LETTER_TURN_MS = 5000
+const SYLLABLE_TURN_MS = 3500
+const WORD_TURN_BASE_MS = 2500
 const WORD_TURN_PER_SYLLABLE_MS = 900
 
 interface IntroScreenProps {
@@ -20,14 +25,16 @@ interface IntroScreenProps {
   character: CharacterKind
   newSyllables: string[]
   words: string[]
-  hasNext: boolean
+  micEnabled: boolean
+  /** Mikrofon izni reddedilirse ya da çalışmazsa çağrılır. */
+  onMicProblem: () => void
   onNext: () => void
 }
 
 interface TalkOptions {
   rate?: number
   mood?: CharacterMood
-  /** Ekranda yazandan farklı bir metin okutmak için. */
+  /** Ekranda yazandan farklı bir metin okutmak için (okunuşu düzeltmek gerekirse). */
   spoken?: string
 }
 
@@ -36,7 +43,8 @@ export function IntroScreen({
   character,
   newSyllables,
   words,
-  hasNext,
+  micEnabled,
+  onMicProblem,
   onNext,
 }: IntroScreenProps) {
   const [mood, setMood] = useState<CharacterMood>('idle')
@@ -44,14 +52,24 @@ export function IntroScreen({
   const [phase, setPhase] = useState<Phase>('letter')
   const [active, setActive] = useState<string | null>(null)
   const [turnMs, setTurnMs] = useState(0)
+  const [turnActive, setTurnActive] = useState(false)
+  const [listening, setListening] = useState(false)
+  const [heardText, setHeardText] = useState('')
   const [runId, setRunId] = useState(0)
-  const childDone = useRef<(() => void) | null>(null)
-  const name = characterNames[character]
+  const skip = useRef<(() => void) | null>(null)
+  const micOn = useRef(micEnabled)
+  const name = getCharacterName(character)
+
+  useEffect(() => {
+    micOn.current = micEnabled
+  }, [micEnabled])
 
   useEffect(() => {
     const controller = new AbortController()
     const { signal } = controller
-    const voice = characterVoices[character]
+    const voice = getCharacterVoice(character)
+    // ğ tek başına söylenmez: "ağ" gibi bir hecenin içinde duyulur
+    const letterTarget = letter.onlyAfterVowel ? `a${letter.lower}` : letter.lower
 
     async function talk(text: string, options: TalkOptions = {}) {
       if (signal.aborted) return
@@ -62,13 +80,91 @@ export function IntroScreen({
       if (!signal.aborted) setMood('idle')
     }
 
-    /** Çocuğa söyleme sırası verir: süre çubuğu akar, bitince devam edilir. */
-    async function childTurn(ms: number) {
-      if (signal.aborted) return
-      setSaid('Sıra sende!')
-      setTurnMs(ms)
-      await pause(ms, signal)
-      setTurnMs(0)
+    /**
+     * Çocuğa söyleme sırası verir; hiçbir butona basması gerekmez.
+     * Mikrofon açıksa kendiliğinden dinler (en fazla 2 deneme), kapalıysa süre tanır.
+     * Çocuk pembe 🎤 butonuyla süreyi erken bitirebilir.
+     */
+    async function childTurn(
+      target: string,
+      ms: number,
+      sayAgain: () => Promise<void>,
+    ): Promise<TurnResult> {
+      for (let attempt = 0; attempt < 2; attempt++) {
+        if (signal.aborted) return 'timed'
+
+        const local = new AbortController()
+        const link = () => local.abort()
+        signal.addEventListener('abort', link, { once: true })
+        skip.current = () => local.abort()
+
+        setSaid('Sıra sende!')
+        setTurnActive(true)
+
+        try {
+          if (!micOn.current || !isListeningSupported()) {
+            setTurnMs(ms)
+            await pause(ms, local.signal)
+            return signal.aborted ? 'timed' : local.signal.aborted ? 'success' : 'timed'
+          }
+
+          // Karakterin sesi tamamen bitsin, ses sistemi girişe geçsin
+          stopSpeaking()
+          await pause(450, local.signal)
+          if (local.signal.aborted) return signal.aborted ? 'timed' : 'success'
+
+          // Tek harf ve kısa hecelerde tanıyıcı zayıf: baştan cömert davran
+          const lenient = attempt === 1 || [...target].length <= 2
+          const outcome = await listen({
+            timeoutMs: ms,
+            signal: local.signal,
+            accept: (heard) => isMatch(target, heard, { lenient }),
+            onReady: () => {
+              setListening(true)
+              setTurnMs(ms)
+            },
+          })
+          if (signal.aborted) return 'timed'
+          if (local.signal.aborted || outcome.status === 'matched') return 'success'
+
+          if (outcome.status === 'nomatch') setHeardText(outcome.heard.join(' | '))
+          if (outcome.status === 'sound') setHeardText('(ses algılandı, yazıya çevrilemedi)')
+          if (outcome.status === 'silence') setHeardText('(hiçbir şey duyulmadı)')
+
+          if (
+            outcome.status === 'denied' ||
+            outcome.status === 'unsupported' ||
+            outcome.status === 'error'
+          ) {
+            if (outcome.status !== 'unsupported') setHeardText(`hata: ${outcome.error}`)
+            micOn.current = false
+            onMicProblem()
+            setListening(false)
+            await talk('Mikrofona ulaşamadım. Sadece dinleyip tekrar edelim.')
+            return 'timed'
+          }
+
+          // Ses algılandı ama tanıyıcı yazıya çeviremedi: çocuk denemiş, cesaretlendir
+          if (outcome.status === 'sound') return 'tried'
+
+          if (attempt === 1) return 'gaveUp'
+          setListening(false)
+          setTurnMs(0)
+          await talk(
+            outcome.status === 'silence'
+              ? 'Seni duyamadım. Bir daha söyle!'
+              : 'Neredeyse! Birlikte söyleyelim.',
+          )
+          await sayAgain()
+        } finally {
+          setListening(false)
+          setTurnMs(0)
+          setTurnActive(false)
+          skip.current = null
+          signal.removeEventListener('abort', link)
+        }
+      }
+      return 'gaveUp'
     }
 
     async function readItems(items: string[], intro: string, kind: ItemKind) {
@@ -78,6 +174,8 @@ export function IntroScreen({
         setActive(item)
 
         const parts = kind === 'word' ? syllabify(item) : [item]
+        // Tireli yazım, kısa kelimelerin İngilizce okunmasını azaltır (ni-ne)
+        const sayItem = () => talk(item, { rate: 0.7, spoken: parts.join('-') })
 
         // Çok heceli kelimeler önce hece hece okunur
         if (parts.length > 1) {
@@ -86,46 +184,53 @@ export function IntroScreen({
             await pause(250, signal)
           }
         }
-        // Tireli yazım, kısa kelimelerin İngilizce okunmasını azaltır (ni-ne)
-        await talk(item, { rate: 0.7, spoken: parts.join('-') })
+        await sayItem()
 
         const ms =
           kind === 'syllable'
             ? SYLLABLE_TURN_MS
             : WORD_TURN_BASE_MS + WORD_TURN_PER_SYLLABLE_MS * parts.length
-        await childTurn(ms)
+        const result = await childTurn(item, ms, sayItem)
+        if (signal.aborted) return
+
+        if (result === 'success') await talk('Aferin!', { rate: 0.9, mood: 'happy' })
+        else if (result === 'tried') await talk('Güzel söyledin!', { rate: 0.9, mood: 'happy' })
+        else if (result === 'gaveUp') await talk('Olsun, devam edelim!')
       }
       setActive(null)
     }
 
     async function run() {
       setActive(null)
-      setTurnMs(0)
+      setHeardText('')
 
       setPhase('letter')
       await talk(`Merhaba, ben ${name}!`)
       await talk('Bugünkü harfimiz:')
-      await talk(letter.lower, { rate: 0.5 })
+      const sayLetter = () => talk(letter.lower, { rate: 0.5, spoken: letterTarget })
+      await sayLetter()
       if (signal.aborted) return
 
       setPhase('repeat')
       await talk('Şimdi sen söyle!')
-      await new Promise<void>((resolve) => {
-        childDone.current = resolve
-        signal.addEventListener('abort', () => resolve(), { once: true })
-      })
+      const result = await childTurn(letterTarget, LETTER_TURN_MS, sayLetter)
       if (signal.aborted) return
-      await talk('Aferin sana!', { rate: 0.85, mood: 'happy' })
+      if (result === 'gaveUp') await talk('Olsun, yavaş yavaş öğreniriz!', { rate: 0.85 })
+      else await talk('Aferin sana!', { rate: 0.85, mood: 'happy' })
 
       if (newSyllables.length > 0) {
         setPhase('syllables')
-        await readItems(newSyllables, 'Şimdi heceleri okuyalım. Önce ben, sonra sen!', 'syllable')
+        await readItems(
+          newSyllables,
+          'Şimdi heceleri okuyalım. Beni dinle, sonra sen söyle!',
+          'syllable',
+        )
         if (signal.aborted) return
       }
 
       if (words.length > 0) {
         setPhase('words')
-        await readItems(words, 'Şimdi kelimeleri okuyalım. Önce ben, sonra sen!', 'word')
+        await readItems(words, 'Şimdi kelimeleri okuyalım. Beni dinle, sonra sen söyle!', 'word')
         if (signal.aborted) return
       }
 
@@ -139,7 +244,16 @@ export function IntroScreen({
       controller.abort()
       stopSpeaking()
     }
-  }, [runId, letter.lower, name, character, newSyllables, words])
+  }, [
+    runId,
+    letter.lower,
+    letter.onlyAfterVowel,
+    name,
+    character,
+    newSyllables,
+    words,
+    onMicProblem,
+  ])
 
   function handleCharacterTap() {
     if (mood !== 'idle') return
@@ -162,6 +276,9 @@ export function IntroScreen({
           {said}
         </p>
       </div>
+
+      {listening && <p className="mic-live">🎤 Dinliyorum…</p>}
+      {import.meta.env.DEV && heardText && <p className="debug">Duyduğum: {heardText}</p>}
 
       {turnMs > 0 && (
         <div className="turn" aria-hidden="true">
@@ -208,9 +325,14 @@ export function IntroScreen({
       )}
 
       <div className="actions">
-        {phase === 'repeat' && (
-          <Button className="btn--attention" onClick={() => childDone.current?.()}>
-            🎤 Söyledim!
+        {turnActive && (
+          <Button
+            className="btn--icon btn--attention"
+            aria-label="Söyledim, geç"
+            title="Söyledim, geç"
+            onClick={() => skip.current?.()}
+          >
+            🎤
           </Button>
         )}
         <Button
@@ -223,20 +345,13 @@ export function IntroScreen({
           🔁
         </Button>
         <Button
-          className={phase === 'done' && hasNext ? 'btn--go btn--attention' : 'btn--go'}
+          className={phase === 'done' ? 'btn--go btn--attention' : 'btn--go'}
           onClick={onNext}
-          disabled={!hasNext}
         >
-          {hasNext ? (
-            <>
-              Yazalım!
-              <span className="btn__arrow" aria-hidden="true">
-                ➜
-              </span>
-            </>
-          ) : (
-            'Şimdilik bu kadar!'
-          )}
+          Yazalım!
+          <span className="btn__arrow" aria-hidden="true">
+            ➜
+          </span>
         </Button>
       </div>
     </section>

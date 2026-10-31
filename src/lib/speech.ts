@@ -143,3 +143,11 @@ export async function speak(
 export function stopSpeaking(): void {
   if (isSpeechSupported()) window.speechSynthesis.cancel()
 }
+
+/** Safari gibi tarayıcılarda sesin ilk çalışması bir dokunuşun içinde başlamalı. */
+export function unlockSpeech(): void {
+  if (!isSpeechSupported()) return
+  const silent = new SpeechSynthesisUtterance(' ')
+  silent.volume = 0
+  window.speechSynthesis.speak(silent)
+}
