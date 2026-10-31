@@ -54,7 +54,6 @@ export function IntroScreen({
   const [turnMs, setTurnMs] = useState(0)
   const [turnActive, setTurnActive] = useState(false)
   const [listening, setListening] = useState(false)
-  const [heardText, setHeardText] = useState('')
   const [runId, setRunId] = useState(0)
   const skip = useRef<(() => void) | null>(null)
   const micOn = useRef(micEnabled)
@@ -127,16 +126,11 @@ export function IntroScreen({
           if (signal.aborted) return 'timed'
           if (local.signal.aborted || outcome.status === 'matched') return 'success'
 
-          if (outcome.status === 'nomatch') setHeardText(outcome.heard.join(' | '))
-          if (outcome.status === 'sound') setHeardText('(ses algılandı, yazıya çevrilemedi)')
-          if (outcome.status === 'silence') setHeardText('(hiçbir şey duyulmadı)')
-
           if (
             outcome.status === 'denied' ||
             outcome.status === 'unsupported' ||
             outcome.status === 'error'
           ) {
-            if (outcome.status !== 'unsupported') setHeardText(`hata: ${outcome.error}`)
             micOn.current = false
             onMicProblem()
             setListening(false)
@@ -202,7 +196,6 @@ export function IntroScreen({
 
     async function run() {
       setActive(null)
-      setHeardText('')
 
       setPhase('letter')
       await talk(`Merhaba, ben ${name}!`)
@@ -278,7 +271,6 @@ export function IntroScreen({
       </div>
 
       {listening && <p className="mic-live">🎤 Dinliyorum…</p>}
-      {import.meta.env.DEV && heardText && <p className="debug">Duyduğum: {heardText}</p>}
 
       {turnMs > 0 && (
         <div className="turn" aria-hidden="true">

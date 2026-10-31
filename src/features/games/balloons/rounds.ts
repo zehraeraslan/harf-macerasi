@@ -44,7 +44,12 @@ export function shuffle<T>(items: T[], rng: () => number): T[] {
  * Oyun için sorular üretir. Soru türleri sırayla değişir (harf, hece, kelime),
  * yeterli öğesi olmayan tür atlanır. Aynı hedef mümkün olduğunca tekrarlanmaz.
  */
-export function buildRounds(pool: Pool, count: number, rng: () => number): Round[] {
+export function buildRounds(
+  pool: Pool,
+  count: number,
+  rng: () => number,
+  optionCount = OPTION_COUNT,
+): Round[] {
   const kinds = KINDS.filter((kind) => pool[kind].length >= MIN_POOL)
   if (kinds.length === 0) return []
 
@@ -67,7 +72,7 @@ export function buildRounds(pool: Pool, count: number, rng: () => number): Round
       rng,
     )
       .sort((a, b) => Math.abs(a.length - target.length) - Math.abs(b.length - target.length))
-      .slice(0, OPTION_COUNT - 1)
+      .slice(0, optionCount - 1)
 
     rounds.push({ kind, target, options: shuffle([target, ...distractors], rng) })
   }

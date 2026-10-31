@@ -151,3 +151,37 @@ export function unlockSpeech(): void {
   silent.volume = 0
   window.speechSynthesis.speak(silent)
 }
+
+interface SayItem {
+  text: string
+  /** Ses kaydı anahtarı; verilmezse text kullanılır */
+  clip?: string
+  rate?: number
+}
+
+let activeTalk: AbortController | undefined
+
+/** Devam eden karakter konuşmasını keser. */
+export function stopTalking(): void {
+  activeTalk?.abort()
+  activeTalk = undefined
+  stopSpeaking()
+}
+
+/** Cümleleri sırayla söyler; yeni bir konuşma başlayınca öncekini keser. */
+export function say(items: SayItem[], voice: { pitch: number; rate: number }): void {
+  stopTalking()
+  const controller = new AbortController()
+  activeTalk = controller
+  void (async () => {
+    for (const item of items) {
+      if (controller.signal.aborted) return
+      await speak(item.text, {
+        rate: item.rate ?? voice.rate,
+        pitch: voice.pitch,
+        signal: controller.signal,
+        clip: item.clip ?? item.text,
+      })
+    }
+  })()
+}

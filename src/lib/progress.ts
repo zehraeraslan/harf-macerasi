@@ -4,20 +4,27 @@ export interface Progress {
   version: 1
   /** Harf -> kazanılan yıldız (1-3). Kaydı olmayan harf henüz tamamlanmamıştır. */
   stars: Record<string, number>
+  /** Kazanılan çıkartmaların kimlikleri */
+  stickers: string[]
 }
 
-export const emptyProgress: Progress = { version: 1, stars: {} }
+export const emptyProgress: Progress = { version: 1, stars: {}, stickers: [] }
 
 /** Saklanan metni güvenle okur: bozuk ya da yabancı veri gelirse boş ilerleme döner. */
-export function parseProgress(raw: string | null, validLetters: string[]): Progress {
+export function parseProgress(
+  raw: string | null,
+  validLetters: string[],
+  validStickers: string[] = [],
+): Progress {
   if (!raw) return emptyProgress
   try {
     const data: unknown = JSON.parse(raw)
     if (typeof data !== 'object' || data === null) return emptyProgress
-    const record = data as { version?: unknown; stars?: unknown }
+    const record = data as { version?: unknown; stars?: unknown; stickers?: unknown }
     if (record.version !== 1 || typeof record.stars !== 'object' || record.stars === null) {
       return emptyProgress
     }
+
     const stars: Record<string, number> = {}
     for (const [letter, value] of Object.entries(record.stars as Record<string, unknown>)) {
       const valid =
@@ -28,7 +35,18 @@ export function parseProgress(raw: string | null, validLetters: string[]): Progr
         value <= 3
       if (valid) stars[letter] = value
     }
-    return { version: 1, stars }
+
+    const stickers = Array.isArray(record.stickers)
+      ? [
+          ...new Set(
+            record.stickers.filter(
+              (id): id is string => typeof id === 'string' && validStickers.includes(id),
+            ),
+          ),
+        ]
+      : []
+
+    return { version: 1, stars, stickers }
   } catch {
     return emptyProgress
   }
@@ -49,12 +67,18 @@ export function totalStars(progress: Progress): number {
 export function withStars(progress: Progress, letter: string, stars: number): Progress {
   const earned = Math.min(3, Math.max(1, Math.round(stars)))
   const best = Math.max(progress.stars[letter] ?? 0, earned)
-  return { version: 1, stars: { ...progress.stars, [letter]: best } }
+  return { ...progress, stars: { ...progress.stars, [letter]: best } }
 }
 
-export function loadProgress(validLetters: string[]): Progress {
+/** Çıkartma ekler; zaten varsa değiştirmez. */
+export function withSticker(progress: Progress, id: string): Progress {
+  if (progress.stickers.includes(id)) return progress
+  return { ...progress, stickers: [...progress.stickers, id] }
+}
+
+export function loadProgress(validLetters: string[], validStickers: string[]): Progress {
   try {
-    return parseProgress(localStorage.getItem(PROGRESS_KEY), validLetters)
+    return parseProgress(localStorage.getItem(PROGRESS_KEY), validLetters, validStickers)
   } catch {
     return emptyProgress
   }

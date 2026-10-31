@@ -19,11 +19,11 @@ export const GAME_UNLOCK = 3
 interface MapScreenProps {
   progress: Progress
   onOpenLetter: (index: number) => void
-  onOpenGame: () => void
+  onOpenPark: () => void
   onReset: () => void
 }
 
-export function MapScreen({ progress, onOpenLetter, onOpenGame, onReset }: MapScreenProps) {
+export function MapScreen({ progress, onOpenLetter, onOpenPark, onReset }: MapScreenProps) {
   const done = completedCount(progress, ORDER)
   const canPlay = done >= GAME_UNLOCK
 
@@ -38,8 +38,8 @@ export function MapScreen({ progress, onOpenLetter, onOpenGame, onReset }: MapSc
       </div>
 
       <div className="map__game">
-        <Button className="btn--go" disabled={!canPlay} onClick={onOpenGame}>
-          🎈 Balon oyunu
+        <Button className="btn--go" disabled={!canPlay} onClick={onOpenPark}>
+          🎮 Oyun Parkı
         </Button>
         {!canPlay && <p className="notice">🔒 {GAME_UNLOCK} harf öğrenince açılır</p>}
       </div>
