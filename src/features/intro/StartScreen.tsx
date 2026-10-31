@@ -33,9 +33,10 @@ interface StartScreenProps {
   micEnabled: boolean
   onMicChange: (enabled: boolean) => void
   onStart: () => void
+  onAbout: () => void
 }
 
-export function StartScreen({ micEnabled, onMicChange, onStart }: StartScreenProps) {
+export function StartScreen({ micEnabled, onMicChange, onStart, onAbout }: StartScreenProps) {
   const [voice, setVoice] = useState<VoiceStatus>('ok')
   const [note, setNote] = useState('')
   const [test, setTest] = useState<TestState>({ phase: 'idle' })
@@ -117,6 +118,10 @@ export function StartScreen({ micEnabled, onMicChange, onStart }: StartScreenPro
         )}
         {note && <p className="notice">{note}</p>}
       </div>
+
+      <Button variant="ghost" className="btn--small" onClick={onAbout}>
+        👪 Ebeveynler için
+      </Button>
 
       {voice === 'unsupported' && (
         <p className="notice">Bu tarayıcı sesli okumayı desteklemiyor. Chrome veya Safari dene.</p>

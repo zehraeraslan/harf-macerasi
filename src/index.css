@@ -1183,3 +1183,62 @@ body {
 .album__item--locked .album__emoji {
   filter: grayscale(1) opacity(0.4);
 }
+
+/* Yayın: dokunmatik ekran ve telefon davranışları */
+body {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+.app {
+  padding-top: max(24px, env(safe-area-inset-top));
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Ebeveynler için sayfa */
+.about {
+  align-items: stretch;
+  text-align: left;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.about h2 {
+  margin: 12px 0 4px;
+  font-size: 1.15rem;
+  color: var(--grape);
+}
+
+.about p,
+.about li {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.about ul {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.about a {
+  color: var(--grape);
+  font-weight: 600;
+}
+
+.about__beta {
+  padding: 10px 16px;
+  border: 3px dashed var(--tangerine);
+  border-radius: 20px;
+  background: #fff;
+}
+
+.about .map__title {
+  align-self: center;
+}
+
+.about .btn--icon {
+  align-self: center;
+}

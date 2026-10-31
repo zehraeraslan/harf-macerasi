@@ -6,6 +6,7 @@ import { castByLetter } from './data/cast'
 import { pickSticker, stickers } from './data/stickers'
 import type { Sticker } from './data/stickers'
 import { words } from './data/words'
+import { AboutScreen } from './features/about/AboutScreen'
 import { AlbumScreen } from './features/album/AlbumScreen'
 import {
   MAX_SYLLABLES,
@@ -51,6 +52,7 @@ type After = 'map' | 'park' | 'finish'
 
 type Screen =
   | { name: 'start' }
+  | { name: 'about' }
   | { name: 'map' }
   | { name: 'park' }
   | { name: 'album' }
@@ -192,9 +194,12 @@ function App() {
           <StartScreen
             micEnabled={micEnabled}
             onMicChange={changeMic}
+            onAbout={() => setScreen({ name: 'about' })}
             onStart={() => setScreen({ name: 'map' })}
           />
         )}
+
+        {screen.name === 'about' && <AboutScreen onBack={() => setScreen({ name: 'start' })} />}
 
         {screen.name === 'map' && (
           <MapScreen
